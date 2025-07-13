@@ -1,0 +1,58 @@
+Spending Behavior Classification: Detailed Description Document
+Objective:
+This document provides a structured framework for classifying individual spending behavior into one of three categories:
+- Conservative Spender
+- Moderate Spender
+- Aggressive Spender
+The classification is based on the proportion of an individual's income allocated toward essential needs, discretionary wants, and savings/investments.
+1. Input Features:
+Each user profile is characterized by the following data points:
+A. Total Income:
+Net monthly or annual income available for expenses and savings.
+B. Essential Expenses (Needs):
+- Rent
+- Food and groceries
+- Commute and transportation (e.g., public transit, fuel, car loans)
+- Healthcare and insurance
+- Education
+- Self care
+- Electricity
+- Debt repayment
+- School fee
+- College fee
+- Personal training fee
+- Gym free
+- Insurance
+- Fuel
+- Petrol
+- Diesel
+- EV charging
+C. Discretionary Expenses (Wants):
+- Entertainment (e.g., movies, dining out, hobbies)
+- Trips and travel
+- Subscriptions (e.g., Netflix, Spotify, magazines)
+- Lifestyle & luxury spending (e.g., apparel, gadgets)
+- Clothing
+D. Savings and Investments:
+- Investment
+- Stocks
+- Mutual funds
+- Debt funds
+- Gold
+- Emergency funds
+2. Classification Categories:
+A. Conservative Spender:
+Spending Profile:
+- Discretionary Spend: Less than 20% of income
+- Savings: Greater than 30%
+- Essential Spend: Between 40% and 50%
+B. Moderate Spender:
+Spending Profile:
+- Discretionary Spend: 20% to 35% of income
+- Savings: 15% to 30%
+- Essential Spend: 45% to 60%
+C. Aggressive Spender:
+Spending Profile:
+- Discretionary Spend: Greater than 35% of income
+- Savings: Less than 15%
+- Essential Spend: Often under 50% (may be forced to cut essentials to afford lifestyle)

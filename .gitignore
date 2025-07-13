@@ -1,0 +1,41 @@
+# Python ignores
+ollama-python/venv/
+ollama-python/__pycache__/
+ollama-python/*.pyc
+ollama-python/*.pyo
+ollama-python/*.pyd
+ollama-python/.Python
+ollama-python/env/
+ollama-python/.env
+ollama-python/.venv
+ollama-python/.ipynb_checkpoints/
+ollama-python/.mypy_cache/
+ollama-python/.pytest_cache/
+ollama-python/.DS_Store
+
+# Jupyter Notebook checkpoints
+ollama-python/.ipynb_checkpoints/
+
+# VSCode settings
+.vscode/
+
+# Node/Next.js ignores
+ui/node_modules/
+ui/.next/
+ui/.env
+ui/.env.*
+ui/yarn.lock
+ui/package-lock.json
+ui/npm-debug.log*
+ui/.DS_Store
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Misc
+*.swp
+*.swo 
