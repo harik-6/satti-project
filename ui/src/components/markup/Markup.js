@@ -1,4 +1,3 @@
-import { Markup } from 'react-render-markup';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 

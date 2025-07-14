@@ -28,11 +28,22 @@ B. Essential Expenses (Needs):
 - Diesel
 - EV charging
 C. Discretionary Expenses (Wants):
-- Entertainment (e.g., movies, dining out, hobbies)
+- Entertainment
+- Dining out
+- Movies
+- Cinema
 - Trips and travel
-- Subscriptions (e.g., Netflix, Spotify, magazines)
-- Lifestyle & luxury spending (e.g., apparel, gadgets)
+- Subscriptions
+- Netflix
+- Hotstar
+- Amazon Prime
+- Spotify
+- Lifestyle & luxury spending
 - Clothing
+- Apparel
+- Gadgets
+- Electronics
+- Luxury items
 D. Savings and Investments:
 - Investment
 - Stocks
@@ -44,15 +55,15 @@ D. Savings and Investments:
 A. Conservative Spender:
 Spending Profile:
 - Discretionary Spend: Less than 20% of income
-- Savings: Greater than 30%
+- Savings or Investment: Greater than 30%
 - Essential Spend: Between 40% and 50%
 B. Moderate Spender:
 Spending Profile:
 - Discretionary Spend: 20% to 35% of income
-- Savings: 15% to 30%
+- Savings or Investment: 15% to 30%
 - Essential Spend: 45% to 60%
 C. Aggressive Spender:
 Spending Profile:
 - Discretionary Spend: Greater than 35% of income
-- Savings: Less than 15%
-- Essential Spend: Often under 50% (may be forced to cut essentials to afford lifestyle)
+- Savings or Investment: Less than 15%
+- Essential Spend: Often under 50%

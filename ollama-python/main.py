@@ -59,7 +59,7 @@ async def classify_behaviour(file: UploadFile = File(...)):
                 user_prompt += f"{value} on {key} "
             result_dict[key] = value
 
-        user_prompt += " What kind of spender I am?"
+        user_prompt += " What kind of spender I am? Respond to me in 100 words"
 
         assistant_response = await spend_behaviour.classify_behaviour(user_prompt)
 
