@@ -12,6 +12,10 @@ ollama-python/.ipynb_checkpoints/
 ollama-python/.mypy_cache/
 ollama-python/.pytest_cache/
 ollama-python/.DS_Store
+ollama-python/.idea/
+ollama-python/*/__pycache__/
+ollama-python/*/*/__pycache__/
+
 
 # Jupyter Notebook checkpoints
 ollama-python/.ipynb_checkpoints/
@@ -40,4 +44,7 @@ Thumbs.db
 *.swp
 *.swo 
 
-ollama-python/.idea/
+
+# Files
+HDFC.*
+AXIS.*

@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import Stepper from "../../components/stepper/Stepper";
 import UploadPage from "../../components/upload/Upload";
-import CircularProgress from "@mui/material/CircularProgress";
 import Markup from "../../components/markup/Markup";
 import CustomizationWidget from "../../components/customization/Customization";
+import PreLoader from "../../components/preloader/PreLoader";
+import { useRouter } from "next/navigation";
 
 
 function AnalyzingWidget({ assistantReponse }) {
@@ -13,13 +14,10 @@ function AnalyzingWidget({ assistantReponse }) {
       {
         assistantReponse ? (
           <>
-          <Markup content={assistantReponse} />
+            <Markup content={assistantReponse} />
           </>
         ) : (
-          <>
-            <CircularProgress color="primary" size={60} />
-            <div className="mt-6 text-lg font-semibold text-gray-700">Analyzing file</div>
-          </>
+          <PreLoader />
         )
       }
     </div>
@@ -27,6 +25,7 @@ function AnalyzingWidget({ assistantReponse }) {
 }
 
 export default function StartPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [assistantReponse, setAssistantReponse] = useState(null);
   const [error, setError] = useState("");
@@ -45,7 +44,6 @@ export default function StartPage() {
         setError(`Upload failed: ${errorText}`);
       } else {
         const result = await response.json();
-        console.log("result", result);
         setAssistantReponse(result["assistant_response"]);
       }
     } catch (err) {
@@ -59,9 +57,44 @@ export default function StartPage() {
     "Customization"
   ];
 
+  const handleNext = async (newStep) => {
+    if (newStep === 3) {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/classify/behaviour/short", {
+          method: "POST",
+          body: JSON.stringify({
+            "behaviour": assistantReponse,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const result = await response.json();
+        router.push(`/recommend?behaviour=${result.payload}`);
+      } catch (err) {
+        setError(`Upload error: ${err.message}`);
+      }
+
+      return;
+    }
+    console.log("handleNext", newStep);
+  };
+
+  const handleBack = (newStep) => {
+    if (newStep === 0) {
+      setAssistantReponse(null);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-      <Stepper labels={labels} currentStep={currentStep} onStepChange={setCurrentStep}>
+      <Stepper
+        labels={labels}
+        currentStep={currentStep}
+        onStepChange={setCurrentStep}
+        onNext={handleNext}
+        onBack={handleBack}
+      >
         <UploadPage onUpload={handleUpload} />
         <AnalyzingWidget assistantReponse={assistantReponse} />
         <CustomizationWidget />

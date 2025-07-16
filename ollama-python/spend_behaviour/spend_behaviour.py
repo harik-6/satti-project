@@ -11,32 +11,6 @@ def read_system_prompt():
     except Exception as e:
         return e 
 
-# def main():
-#     user_input = """
-#     I earn $15300 per month. I spend about $2000 on rent and utilities, $800 on food and groceries,
-#     $300 on transportation. I spend around $1200 on entertainment, dining out, and shopping.
-#     I save about $10000 per month in my savings account and investments. What kind of spender I am and Why?
-#     """
-#
-#     print("\n🤖 AI Classification:")
-#     print("-" * 30)
-#     system_prompt = read_system_prompt("spend_behaviour.txt")
-#
-#     chat_messages = [
-#         {"role": "system", "content": system_prompt},
-#         {"role": "user", "content": ""},
-#     ]
-#     chat_messages[1]["content"] = user_input
-#
-#     try:
-#         result = ollama.chat(model="llama3.2:latest", messages=chat_messages)
-#         print(result.message.content)
-#     except Exception as e:
-#         return f"Error getting classification: {e}"
-
-# if __name__ == "__main__":
-#     main()
-
 async def classify_behaviour(user_prompt):
     system_prompt = read_system_prompt()
 
@@ -55,5 +29,3 @@ async def classify_behaviour(user_prompt):
         return result.message.content
     except Exception as e:
         return f"Error getting classification: {e}"
-
-

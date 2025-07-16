@@ -1,6 +1,22 @@
 import React from "react";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-export default function Stepper({ labels, currentStep, onStepChange, children }) {
+export default function Stepper({ labels, currentStep, onStepChange, children, onNext, onBack }) {
+
+  const handleNext = () => {
+    if (currentStep < labels.length - 1) {
+      onStepChange(currentStep + 1);
+    }
+    onNext(currentStep + 1);
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      onStepChange(currentStep - 1);
+    }
+    onBack(currentStep - 1);
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-10">
@@ -39,18 +55,21 @@ export default function Stepper({ labels, currentStep, onStepChange, children })
       </div>
       <div className="flex justify-between mt-10">
         <button
-          className="px-8 py-3 rounded bg-gray-200 text-gray-700 font-semibold disabled:opacity-50"
-          onClick={() => onStepChange(currentStep - 1)}
+          className="px-8 py-3 cursor-pointer rounded bg-gray-200 text-gray-700 font-semibold disabled:opacity-50"
+          onClick={handleBack}
           disabled={currentStep === 0}
         >
           Back
         </button>
         <button
-          className="px-8 py-3 rounded bg-blue-600 text-white font-semibold disabled:opacity-50"
-          onClick={() => onStepChange(currentStep + 1)}
-          // disabled={currentStep === labels.length - 1}
+          className="px-8 py-3 cursor-pointer rounded bg-blue-600 text-white font-semibold disabled:opacity-50"
+          onClick={handleNext}
         >
-          Next
+          {currentStep === labels.length - 1 ? (
+            <span className="flex items-center gap-2">Show me the plan <ArrowForwardIcon fontSize="small" /></span>
+          ) : (
+            "Next"
+          )}
         </button>
       </div>
     </div>

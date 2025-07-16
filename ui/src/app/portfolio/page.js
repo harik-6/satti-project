@@ -1,8 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function PortfolioPage() {
   const [tab, setTab] = useState("mutual");
+  const searchParams = useSearchParams();
+
+  async function getPortfolio(spendBehaviour) {
+    const response = await fetch("http://127.0.0.1:8000/select/funds", {
+      method: "POST",
+      body: JSON.stringify({
+        "behaviour": spendBehaviour,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    const result = await response.json();
+    console.log("portfolio", result);
+  }
+
+
+  useEffect(() => {
+    const spendBehaviour = searchParams.get("behaviour");
+    console.log("spendBehaviour", spendBehaviour);
+    getPortfolio(spendBehaviour);
+  }, [searchParams]);
 
   return (
     <div className="max-w-5xl mx-auto p-6">
