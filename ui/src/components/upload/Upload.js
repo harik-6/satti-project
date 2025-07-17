@@ -6,20 +6,10 @@ export default function UploadPage({ onUpload }) {
   const [error, setError] = useState("");
   const inputRef = useRef();
 
-  const handleFile = (file) => {
-    const allowedTypes = [
-      "application/pdf",
-      "text/csv",
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    ];
-    const allowedExtensions = [".pdf", ".csv", ".xlsx"];
-    if (
-      file &&
-      !allowedTypes.includes(file.type) &&
-      !allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext))
-    ) {
-      setError("Please select a PDF, CSV, or XLSX file.");
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && !file.name.endsWith(".txt")) {
+      setError("Please select a TXT file.");
       setSelectedFile(null);
     } else if (file) {
       setError("");
@@ -27,16 +17,10 @@ export default function UploadPage({ onUpload }) {
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    handleFile(file);
-  };
-
   const handleBrowseClick = () => {
     inputRef.current.click();
   };
 
-  
 
   return (
     <div>
@@ -56,7 +40,7 @@ export default function UploadPage({ onUpload }) {
         <input
           ref={inputRef}
           type="file"
-          accept=".pdf,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          accept=".txt"
           className="hidden"
           onChange={handleFileChange}
         />

@@ -12,16 +12,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-function AppHeader() {
+function AppHeader({title}) {
   return (
-    <header className="w-full flex items-center bg-white-900 px-8 py-4 shadow">
-      <h1 className="text-xl font-bold text-gray-800">AI Investment Platform</h1>
+    <header className="w-full flex items-center bg-white-900 px-8 py-4">
+      <h1 className="text-xl font-bold text-gray-800">{title}</h1>
     </header>
   );
 }
 
 export const metadata = {
-  title: "Investment and Expense Planner using AI",
+  title: "Personal Finance Genie",
   description: "Investment and Expense Planner using AI",
 };
 
@@ -34,8 +34,8 @@ export default function RootLayout({ children }) {
         <div className="flex max-h-screen">
           <Sidebar />
           <div  className="flex-1 flex flex-col">
-            <AppHeader />
-            <div style={{ backgroundColor: '#e7e7e7' }} >
+            <AppHeader title={metadata.title} />
+            <div style={{ backgroundColor: '#e7e7e7', maxHeight: '98vh', minHeight: '98vh' }} >
               {children}
             </div>
           </div>

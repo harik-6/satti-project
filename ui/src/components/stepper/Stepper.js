@@ -6,7 +6,14 @@ import Button from "@mui/material/Button";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-export default function Stepper({ labels, currentStep, onStepChange, children, onNext, onBack }) {
+const labels = [
+  "Upload",
+  "Tag",
+  "Analyze",
+  "Customize your plan"
+];
+
+export default function Stepper({ currentStep, onStepChange, children, onNext, onBack }) {
   const handleNext = () => {
     if (currentStep < labels.length - 1) {
       onStepChange(currentStep + 1);
@@ -30,7 +37,7 @@ export default function Stepper({ labels, currentStep, onStepChange, children, o
           </Step>
         ))}
       </StepperMui>
-      <div className="min-h-[500px]">{children[currentStep]}</div>
+      <div className="min-h-[620px]">{children[currentStep]}</div>
       <div className="flex justify-between mt-10">
         <Button
           variant="outlined"

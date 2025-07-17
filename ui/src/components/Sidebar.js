@@ -3,9 +3,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
-  { label: "Start", href: "/start" },
-  { label: "Tag", href: "/tag" },
+  { label: "Portfolio", href: "/portfolio" },
   { label: "Rules", href: "/rules" },
+  { label: "New Flow", href: "/start" },
 ];
 
 export default function Sidebar() {
