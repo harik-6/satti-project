@@ -74,10 +74,8 @@ export default function StartPage() {
       } catch (err) {
         setError(`Upload error: ${err.message}`);
       }
-
       return;
     }
-    console.log("handleNext", newStep);
   };
 
   const handleBack = (newStep) => {
@@ -87,18 +85,20 @@ export default function StartPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <Stepper
-        labels={labels}
-        currentStep={currentStep}
-        onStepChange={setCurrentStep}
-        onNext={handleNext}
-        onBack={handleBack}
-      >
-        <UploadPage onUpload={handleUpload} />
-        <AnalyzingWidget assistantReponse={assistantReponse} />
-        <CustomizationWidget />
-      </Stepper>
+    <div className="flex justify-center items-start pt-4">
+      <div className="bg-white rounded-sm shadow p-10 max-w-10xl w-full mx-4">
+        <Stepper
+          labels={labels}
+          currentStep={currentStep}
+          onStepChange={setCurrentStep}
+          onNext={handleNext}
+          onBack={handleBack}
+        >
+          <UploadPage onUpload={handleUpload} />
+          <AnalyzingWidget assistantReponse={assistantReponse} />
+          <CustomizationWidget />
+        </Stepper>
+      </div>
     </div>
   );
 } 

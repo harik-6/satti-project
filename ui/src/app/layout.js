@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Sidebar from "../components/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -10,6 +11,14 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+function AppHeader() {
+  return (
+    <header className="w-full flex items-center bg-white-900 px-8 py-4 shadow">
+      <h1 className="text-xl font-bold text-gray-800">AI Investment Platform</h1>
+    </header>
+  );
+}
 
 export const metadata = {
   title: "Investment and Expense Planner using AI",
@@ -22,7 +31,15 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex max-h-screen">
+          <Sidebar />
+          <div  className="flex-1 flex flex-col">
+            <AppHeader />
+            <div style={{ backgroundColor: '#e7e7e7' }} >
+              {children}
+            </div>
+          </div>
+        </div>
       </body>
     </html>
   );
