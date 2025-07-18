@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-export default function StreamingMarkup({ content, speed = 15, onComplete }) {
+export default function StreamingMarkup({ content, speed = 15, onComplete, sx }) {
   const [displayed, setDisplayed] = useState("");
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function StreamingMarkup({ content, speed = 15, onComplete }) {
   }, [content, speed]);
 
   return (
-    <div className="prose max-w-xl mx-auto my-8">
+    <div style={sx} className="prose">
       <Markdown remarkPlugins={[remarkGfm]}>{displayed}</Markdown>
     </div>
   );

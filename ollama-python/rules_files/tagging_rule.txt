@@ -71,17 +71,20 @@ Below are the list of categories and the keywords associated with each category 
 - youtube premium
 - spotify india
 
-### Category = Essential
+### Category = utility
 - reliance jio
 - airtel
 - vodafone idea
 - bsnl
 - tata power
-- adani electricity
+- electricity
 - bescom
 - mseb
 - delhi jal board
 - bwssb
+- ebbill
+- water bill
+- recharge
 
 ### Category = Health
 - apollo hospitals
@@ -99,7 +102,7 @@ Below are the list of categories and the keywords associated with each category 
 - uber
 - ola
 - rapido
-- auto 
+- auto
 - rickshaw
 - metro
 - irctc

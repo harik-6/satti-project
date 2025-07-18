@@ -33,18 +33,18 @@ export default function Stepper({ currentStep, onStepChange, children, onNext, o
       <StepperMui activeStep={currentStep} alternativeLabel className="mb-10">
         {labels.map((label) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <StepLabel >{label}</StepLabel>
           </Step>
         ))}
       </StepperMui>
-      <div className="min-h-[620px]">{children[currentStep]}</div>
-      <div className="flex justify-between mt-10">
+      <div className="min-h-[650px]">{children[currentStep]}</div>
+      <div className="flex justify-between mt-2">
         <Button
           variant="outlined"
           color="primary"
           onClick={handleBack}
           disabled={currentStep === 0}
-          startIcon={<ArrowBackIcon />}
+          startIcon={<ArrowBackIcon fontSize="small" />}
         >
           Back
         </Button>
@@ -52,10 +52,10 @@ export default function Stepper({ currentStep, onStepChange, children, onNext, o
           variant="contained"
           color="primary"
           onClick={handleNext}
-          endIcon={<ArrowForwardIcon />}
+          endIcon={<ArrowForwardIcon fontSize="small" />}
         >
           {currentStep === labels.length - 1 ? (
-            <span className="flex items-center gap-2">Show me the plan <ArrowForwardIcon fontSize="small" /></span>
+            <span className="flex items-center gap-2">Show me the plan</span>
           ) : (
             "Next"
           )}

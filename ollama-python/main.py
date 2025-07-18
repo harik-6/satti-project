@@ -1,17 +1,12 @@
-from typing import Annotated
-
-from fastapi import FastAPI, UploadFile, File, HTTPException, Form
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import pandas as pd
-import io
 
-from services.extractor_service import format_ai_text
-from models import  SelectFundResponse, SelectFundRequest, BsRequest, BsResponse, StatementResponse, \
-    TagResponse
-from select_funds import select_funds
+from models import SelectFundResponse, SelectFundRequest, TagResponse, BehaviourResponse
+import services.funds_service as funds_service
 import services.tag_service as tag_service
-from spend_behaviour import spend_behaviour
-# from services.tag_service import  get_tags, update_tag
+import services.behaviour_service as behaviour_service
+import services.extractor_service as extractor_service
+
 
 app = FastAPI()
 
@@ -43,45 +38,33 @@ async def upload_file(file: UploadFile = File(...)):
         return TagResponse(status="success", payload=tagged)
 
     except Exception as e:
+        e.print_stack()
         raise HTTPException(status_code=500, detail=f"Error processing financial statement file: {str(e)}")
 
 @app.post("/classify/behaviour")
 async def classify_behaviour(body: TagResponse):
-    print(f"Classifying behaviour: {body.payload}")
     try:
-        # user_prompt = "This is how my monthy finance looks like and I spend "
-        #
-        # for i in range(len(df)):
-        #     key = str(first_col.iloc[i]) if pd.notna(first_col.iloc[i]) else ""
-        #     value = str(second_col.iloc[i]) if pd.notna(second_col.iloc[i]) else ""
-        #     if key == "income":
-        #         user_prompt += f" and my Income is {value}."
-        #     elif key == "savings":
-        #         user_prompt += f" and I save {value}."
-        #     elif key == "investment":
-        #         user_prompt += f" and I Invest {value}."
-        #     else:
-        #         user_prompt += f"{value} on {key} "
-        #     result_dict[key] = value
-        #
-        # user_prompt += " What kind of spender I am? Respond to me in 100 words"
-        #
-        # assistant_response = await spend_behaviour.classify_behaviour(user_prompt)
+        sum_by_category = {}
+        for transaction in body.payload:
+            category = transaction.get("category", "untagged")
+            credit = float(transaction.get("credit", "0.00"))
+            debit = float(transaction.get("debit", "0.00"))
+            total_sum = debit + credit
+            if total_sum > 0:
+                if category in sum_by_category:
+                    sum_by_category[category] += total_sum
+                else:
+                    sum_by_category[category] = total_sum
 
-        return {
-            "user_prompt": "user_prompt",
-            "assistant_response": "assistant_response"
-        }
+        behaviour = await behaviour_service.classify_behaviour(sum_by_category)
+        behaviour_short = await extractor_service.format_ai_text(behaviour, "Spender type Conservative, Moderate, Aggressive. Just give me one word response")
+        return BehaviourResponse(status="success", behaviour=behaviour, behaviour_short=behaviour_short)
+
     except Exception as e:
+        print("Error classifying behaviour: ", e)
         raise HTTPException(status_code=500, detail=f"Error classifying behaviour: {str(e)}")
-
-@app.post("/classify/behaviour/short", response_model=BsResponse)
-async def classify_fund(body: BsRequest):
-    extracted = await format_ai_text(body.behaviour, "Spender type Conservative, Moderate, Aggressive. Just give me one word response")
-    print(f"Extracted: {extracted}")
-    return BsResponse(status="success", payload=extracted)
 
 @app.post("/select/funds", response_model=SelectFundResponse)
 async def classify_fund(body: SelectFundRequest):
-    recommendation =  await select_funds.select_funds()
+    recommendation =  await funds_service.select_funds(body.behaviour)
     return SelectFundResponse(status="success", payload=recommendation)

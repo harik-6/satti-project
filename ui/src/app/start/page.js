@@ -4,21 +4,18 @@ import Stepper from "../../components/stepper/Stepper";
 import UploadPage from "../../components/upload/Upload";
 import Markup from "../../components/markup/Markup";
 import CustomizationWidget from "../../components/customization/Customization";
-import PreLoader from "../../components/preloader/PreLoader";
 import TagWidget from "../../components/tag/page";
 import { useRouter } from "next/navigation";
-
+import ThinkerLoader from "../../components/thinkerloader/ThinkerLoader";
 
 function AnalyzingWidget({ assistantReponse }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col h-full items-center">
       {
         assistantReponse ? (
-          <>
-            <Markup content={assistantReponse} />
-          </>
+          <Markup sx={{ fontSize: '1.2rem', maxHeight: '600px', overflowY: 'auto', maxWidth: '60%' }} content={assistantReponse} />
         ) : (
-          <PreLoader />
+          <ThinkerLoader />
         )
       }
     </div>
@@ -30,6 +27,7 @@ export default function StartPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [assistantReponse, setAssistantReponse] = useState(null);
+  const [behaviour, setBehaviour] = useState(null);
   const [error, setError] = useState("");
 
   const handleUpload = async (file) => {
@@ -44,29 +42,40 @@ export default function StartPage() {
       const result = await response.json();
       setTransactions(result.payload);
     } catch (err) {
-      setError(`Upload error: ${err.message}`);
+      setError(`file upload error: ${err.message}`);
     }
   };
 
-  
+  const classifyBehaviour = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/classify/behaviour", {
+        method: "POST",
+        body: JSON.stringify({
+          "status": "success",
+          "payload": transactions,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      setAssistantReponse(result.behaviour);
+      setBehaviour(result.behaviour_short);
+      console.log(result);
+    } catch (err) {
+      setError(`classify behaviour error: ${err.message}`);
+    }
+  }
+
+
 
   const handleNext = async (newStep) => {
-    if (newStep === 3) {
-      try {
-        const response = await fetch("http://127.0.0.1:8000/classify/behaviour/short", {
-          method: "POST",
-          body: JSON.stringify({
-            "behaviour": assistantReponse,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const result = await response.json();
-        router.push(`/recommend?behaviour=${result.payload}`);
-      } catch (err) {
-        setError(`Upload error: ${err.message}`);
-      }
+    if (newStep === 2) {
+      classifyBehaviour();
+      return;
+    }
+    if (newStep === 4) {
+      router.push(`/recommend?behaviour=${behaviour}`);
       return;
     }
   };
@@ -78,8 +87,8 @@ export default function StartPage() {
   };
 
   return (
-    <div className="flex justify-center items-start pt-4 h-full">
-      <div className="bg-white rounded-sm shadow p-10 max-w-10xl w-full mx-4">
+    <div className="flex justify-center items-start pt-0 h-full">
+      <div className="bg-white p-10 max-w-10xl w-full mx-0">
         <Stepper
           currentStep={currentStep}
           onStepChange={setCurrentStep}
@@ -87,9 +96,9 @@ export default function StartPage() {
           onBack={handleBack}
         >
           <UploadPage onUpload={handleUpload} />
-          <TagWidget 
-          transactions={transactions} 
-          onUpdate={setTransactions}
+          <TagWidget
+            transactions={transactions}
+            onUpdate={setTransactions}
           />
           <AnalyzingWidget assistantReponse={assistantReponse} />
           <CustomizationWidget />

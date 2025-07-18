@@ -1,5 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
+import Button from '@mui/material/Button';
+import UploadIcon from '@mui/icons-material/Upload';
 
 export default function UploadPage({ onUpload }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,22 +23,40 @@ export default function UploadPage({ onUpload }) {
     inputRef.current.click();
   };
 
-
   return (
-    <div>
+    <div style={{
+      height: '500px',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
       <form
         onSubmit={() => {}}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%'
+        }}
       >
-        <div className="font-semibold text-lg text-gray-700 mb-2 text-center">
+        <div className="font-semibold text-xl text-gray-700 mb-4">
           Select your file to upload
         </div>
-        <button
-          type="button"
+        <Button
+          variant="contained"
+          color="primary"
           onClick={handleBrowseClick}
-          className="bg-blue-600 cursor-pointer text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-colors duration-200 mb-2 mx-auto block"
+          startIcon={<UploadIcon />}
+          sx={{ 
+            mx: 'auto',
+            fontSize: '1.1rem',
+            fontWeight: 'bold'
+          }}
         >
           Browse files
-        </button>
+        </Button>
         <input
           ref={inputRef}
           type="file"

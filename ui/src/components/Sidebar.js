@@ -14,7 +14,7 @@ export default function Sidebar() {
     <aside className="h-screen w-48 bg-white flex flex-col py-8">
       <nav className="flex flex-col gap-4 mt-14">
         {tabs.map(tab => {
-          const isActive = pathname === tab.href;
+          const isActive = (pathname === tab.href || (pathname === "/recommend" && tab.href === "/start"));
           return (
             <Link
               key={tab.href}

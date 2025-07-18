@@ -9,10 +9,11 @@ import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import PreLoader from "../preloader/PreLoader";
 
-export default function Tag({transactions, onUpdate}) {
+export default function Tag({transactions = [], onUpdate}) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -25,16 +26,18 @@ export default function Tag({transactions, onUpdate}) {
 
   const handleChangeCategory = async (e, id) => {
     const category = e.target.value;
-    const newTx = tx.map(tx => tx.id === id ? { ...tx, category } : tx);
+    console.log(id,category);
+    const newTx = transactions.map((tx,idx) => idx === id ? { ...tx, category } : tx);
+    console.log(newTx);
     onUpdate(newTx);
   }
 
   const categoryOptions = [
-    'rent', 'food', 'shopping', 'groceries', 'movie', 
-    'entertainment', 'essential', 'health', 'salary', 
-    'bonus', 'transport', 'trip', 'bank',
-    'investment', 'insurance', 'education', 'stock',
-    'mutual fund','untagged'
+    'rent', 'food', 'shopping', 'groceries', 'movies', 
+    'entertainment', 'essential', 'health', 
+    'transport', 'trips', 'bank',
+    'investment', 'insurance', 'education', 'stocks',
+    'utility','income',,'utility','untagged'
   ];
 
   const headers = ["Id","Date", "Narration","Amount", "Category"];
@@ -49,16 +52,23 @@ export default function Tag({transactions, onUpdate}) {
     }
   }
 
+  if(transactions.length === 0) {
+    return <PreLoader text="Tagging all your transactions..." />;
+  }
+
+
   return (
       <div className="bg-white rounded-sm p-4 max-w-10xl w-full mx-4">
         <TableContainer className="overflow-x-auto">
           <Table stickyHeader>
             <TableHead >
-              {headers.map((header, idx) => (
-                <TableCell sx={{ fontWeight: 'bold',fontSize: '1.1rem' }} key={idx}>
-                  {header}
-                </TableCell>
-              ))} 
+              <TableRow>
+                {headers.map((header, idx) => (
+                  <TableCell sx={{ fontWeight: 'bold',fontSize: '1.1rem' }} key={idx}>
+                    {header}
+                  </TableCell>
+                ))}
+              </TableRow>
             </TableHead>
             <TableBody>
               {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
@@ -73,10 +83,10 @@ export default function Tag({transactions, onUpdate}) {
                       size="small"
                       displayEmpty
                       sx={{ minWidth: 120 }}
-                      onChange={(e) => handleChangeCategory(e, row.id)}
+                      onChange={(e) => handleChangeCategory(e, Number(page * rowsPerPage + idx))}
                     >
-                      {categoryOptions.map(option => (
-                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                      {categoryOptions.map((option,idx) => (
+                        <MenuItem key={option + "-" + idx} value={option}>{option}</MenuItem>
                       ))}
                     </Select>
                   </TableCell>
@@ -92,7 +102,7 @@ export default function Tag({transactions, onUpdate}) {
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[10, 25, 50]}
+          rowsPerPageOptions={[7, 10, 25, 50]}
         />
       </div>
   );

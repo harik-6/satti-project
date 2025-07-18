@@ -1,5 +1,4 @@
   Date     ,Narration                                                                                                                ,Value Dat,Debit Amount       ,Credit Amount      ,Chq/Ref Number   ,Closing Balance
- 01/01/25  ,UPI-XXXXXX9608-IBKL0001200-500105346255-UPI                                                                              ,01/01/25 ,       25000.00     ,           0.00     ,0000500105346255       ,      212616.97
  02/01/25  ,UPI-SWIGGY LIMITED-SWIGGY1ONLINE.GPAY@OKPAYAXIS-UTIB0000553-501234567890-UPI                                      ,02/01/25 ,         450.00     ,           0.00     ,0000501234567890       ,      212166.97
  03/01/25  ,UPI-ZOMATO LIMITED-ZOMATO.PAYMENTS@HDFCBANK-HDFC0000499-502345678901-UPI                                          ,03/01/25 ,         320.00     ,           0.00     ,0000502345678901       ,      211846.97
  04/01/25  ,NEFT DR-HDFC0000123-LANDLORD NAME-NETBANK-RENT PAYMENT JANUARY 2025                                               ,04/01/25 ,       15000.00     ,           0.00     ,N002345678901234       ,      196846.97
