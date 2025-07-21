@@ -6,7 +6,7 @@ import services.funds_service as funds_service
 import services.tag_service as tag_service
 import services.behaviour_service as behaviour_service
 import services.extractor_service as extractor_service
-
+import services.portfolio_service as portfolio_service
 
 app = FastAPI()
 
@@ -56,6 +56,8 @@ async def classify_behaviour(body: TagResponse):
                 else:
                     sum_by_category[category] = total_sum
 
+        print("Sum by category: ", sum_by_category)
+
         behaviour = await behaviour_service.classify_behaviour(sum_by_category)
         behaviour_short = await extractor_service.format_ai_text(behaviour, "Spender type Conservative, Moderate, Aggressive. Just give me one word response")
         return BehaviourResponse(status="success", behaviour=behaviour, behaviour_short=behaviour_short)
@@ -68,3 +70,14 @@ async def classify_behaviour(body: TagResponse):
 async def classify_fund(body: SelectFundRequest):
     recommendation =  await funds_service.select_funds(body.behaviour)
     return SelectFundResponse(status="success", payload=recommendation)
+
+@app.get("/portfolio")
+async def portfolio():
+    sample_text = "Low Risk Fund (Fixed Income): UTI Corporate Bond Fund from UTI Asset Management Co. Ltd. with a Beta of 0.8, indicating lower volatility. High Risk Fund (Equity): Tata Small Cap Fund from Tata Asset Management, with a high standard deviation of 13.94, suggesting higher risk and potential for higher returns. Low Risk Fund (Fixed Income): Tata Treasury Advantage Fund from Tata Asset Management, which is a low duration fund and has a standard deviation of only 0.25, indicating lower volatility and lower risk"
+    fund_names = await extractor_service.format_ai_text(sample_text, "List of funds. Just give me the list of mutual fund names without the fund house name in comma separated format and nothing else")
+    print("Fund names extracted: ", fund_names)
+    fund_list = []
+    for fund in fund_names.split(","):
+        fund_list.append(fund.strip())
+    portfolio_summary = await portfolio_service.generate_portfolio_summary(fund_list)
+    return {"status": "success", "payload": portfolio_summary}

@@ -4,18 +4,35 @@ import Stepper from "../../components/stepper/Stepper";
 import UploadPage from "../../components/upload/Upload";
 import Markup from "../../components/markup/Markup";
 import CustomizationWidget from "../../components/customization/Customization";
-import TagWidget from "../../components/tag/page";
-import { useRouter } from "next/navigation";
-import ThinkerLoader from "../../components/thinkerloader/ThinkerLoader";
+import TagWidget from "../../components/tag/Tag";
+import PreLoader from "@/components/preloader/PreLoader";
+import AssetRecommendationPage from "../../components/recommend/Recommendation";
+
+const labels = [
+  "Upload",
+  "Tag",
+  "Analyze",
+  "Portfolio Allocation",
+  "Recommendation"
+];
+
 
 function AnalyzingWidget({ assistantReponse }) {
   return (
     <div className="flex flex-col h-full items-center">
       {
         assistantReponse ? (
-          <Markup sx={{ fontSize: '1.2rem', maxHeight: '600px', overflowY: 'auto', maxWidth: '60%' }} content={assistantReponse} />
+          <Markup sx={{
+            fontSize: '1.2rem',
+            maxHeight: '600px',
+            overflowY: 'auto',
+            maxWidth: '60%',
+            lineHeight: '1.5'
+          }}
+            content={assistantReponse}
+          />
         ) : (
-          <ThinkerLoader />
+          <PreLoader />
         )
       }
     </div>
@@ -23,7 +40,6 @@ function AnalyzingWidget({ assistantReponse }) {
 }
 
 export default function StartPage() {
-  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [assistantReponse, setAssistantReponse] = useState(null);
@@ -67,15 +83,19 @@ export default function StartPage() {
     }
   }
 
+  const startOver = () => {
+    setCurrentStep(0);
+    setAssistantReponse(null);
+    setBehaviour(null);
+  }
 
+  const investNow = () => {
+    router.replace(`/portfolio`);
+  }
 
   const handleNext = async (newStep) => {
     if (newStep === 2) {
       classifyBehaviour();
-      return;
-    }
-    if (newStep === 4) {
-      router.push(`/recommend?behaviour=${behaviour}`);
       return;
     }
   };
@@ -90,6 +110,7 @@ export default function StartPage() {
     <div className="flex justify-center items-start pt-0 h-full">
       <div className="bg-white p-10 max-w-10xl w-full mx-0">
         <Stepper
+          labels={labels}
           currentStep={currentStep}
           onStepChange={setCurrentStep}
           onNext={handleNext}
@@ -102,6 +123,11 @@ export default function StartPage() {
           />
           <AnalyzingWidget assistantReponse={assistantReponse} />
           <CustomizationWidget />
+          <AssetRecommendationPage
+            onStartOver={startOver}
+            onInvest={investNow}
+            behaviour={behaviour}
+          />
         </Stepper>
       </div>
     </div>

@@ -6,14 +6,8 @@ import Button from "@mui/material/Button";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-const labels = [
-  "Upload",
-  "Tag",
-  "Analyze",
-  "Customize your plan"
-];
 
-export default function Stepper({ currentStep, onStepChange, children, onNext, onBack }) {
+export default function Stepper({ labels, currentStep, onStepChange, children, onNext, onBack }) {
   const handleNext = () => {
     if (currentStep < labels.length - 1) {
       onStepChange(currentStep + 1);

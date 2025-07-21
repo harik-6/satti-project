@@ -6,7 +6,7 @@ def read_system_prompt():
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
         system_message = (f"You are a financial advisor in India and only based on the context provided:This is the context {content}."
-                          f"classify the spending behaviour of the user")
+                          f"classify the spending behaviour of the user based in 50/30/20 rule.")
         return system_message
     except Exception as e:
         return e 
@@ -33,7 +33,7 @@ async def classify_behaviour(sum_by_category):
             base_prompt += f"{amount} on {category}"
 
     user_prompt = base_prompt + income_prompt + saving_prompt + investment_prompt + stock_prompt
-    user_prompt += "Based on this information, classify my spending behaviour.Do not assume any thing on your own only user the information provided."
+    user_prompt += "Based on this information, classify my spending behaviour in 150 words.Do not assume any thing on your own only user the information provided."
 
     chat_messages = [
         {"role": "system", "content": system_prompt},
