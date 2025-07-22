@@ -1,14 +1,7 @@
 from .models import (
-    SelectFundRequest,
-    SelectFundResponse,
+    TagResponse,
     BehaviourResponse,
-    TagResponse
+    AllocationResponse
 )
 
-__all__ = ["SelectFundRequest",
-           "SelectFundResponse",
-           "BsRequest",
-           "BehaviourResponse",
-           "StatementResponse",
-           "TagRequest",
-           "TagResponse"]
+__all__ = ["TagResponse","BehaviourResponse","AllocationResponse"]

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Stepper from "../../components/stepper/Stepper";
 import UploadPage from "../../components/upload/Upload";
 import Markup from "../../components/markup/Markup";
-import CustomizationWidget from "../../components/customization/Customization";
+import AllocationWidget from "../../components/allocation/Allocation";
 import TagWidget from "../../components/tag/Tag";
 import PreLoader from "@/components/preloader/PreLoader";
 import AssetRecommendationPage from "../../components/recommend/Recommendation";
@@ -17,11 +17,11 @@ const labels = [
 ];
 
 
-function AnalyzingWidget({ assistantReponse }) {
+function AnalyzingWidget({ response }) {
   return (
     <div className="flex flex-col h-full items-center">
       {
-        assistantReponse ? (
+        response ? (
           <Markup sx={{
             fontSize: '1.2rem',
             maxHeight: '600px',
@@ -29,7 +29,7 @@ function AnalyzingWidget({ assistantReponse }) {
             maxWidth: '60%',
             lineHeight: '1.5'
           }}
-            content={assistantReponse}
+            content={response}
           />
         ) : (
           <PreLoader />
@@ -42,9 +42,8 @@ function AnalyzingWidget({ assistantReponse }) {
 export default function StartPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [transactions, setTransactions] = useState([]);
-  const [assistantReponse, setAssistantReponse] = useState(null);
   const [behaviour, setBehaviour] = useState(null);
-  const [error, setError] = useState("");
+  const [allocation, setAllocation] = useState(null);
 
   const handleUpload = async (file) => {
     setCurrentStep(1);
@@ -56,9 +55,10 @@ export default function StartPage() {
         body: formData,
       });
       const result = await response.json();
-      setTransactions(result.payload);
+      console.log(result);
+      setTransactions(result.transactions);
     } catch (err) {
-      setError(`file upload error: ${err.message}`);
+      console.log(`file upload error: ${err.message}`);
     }
   };
 
@@ -68,24 +68,21 @@ export default function StartPage() {
         method: "POST",
         body: JSON.stringify({
           "status": "success",
-          "payload": transactions,
+          "transactions": transactions,
         }),
         headers: {
           "Content-Type": "application/json",
         },
       });
       const result = await response.json();
-      setAssistantReponse(result.behaviour);
-      setBehaviour(result.behaviour_short);
-      console.log(result);
+      setBehaviour(result);
     } catch (err) {
-      setError(`classify behaviour error: ${err.message}`);
+      console.log(`classify behaviour error: ${err.message}`);
     }
   }
 
   const startOver = () => {
     setCurrentStep(0);
-    setAssistantReponse(null);
     setBehaviour(null);
   }
 
@@ -102,7 +99,7 @@ export default function StartPage() {
 
   const handleBack = (newStep) => {
     if (newStep === 0) {
-      setAssistantReponse(null);
+      startOver();
     }
   };
 
@@ -121,12 +118,12 @@ export default function StartPage() {
             transactions={transactions}
             onUpdate={setTransactions}
           />
-          <AnalyzingWidget assistantReponse={assistantReponse} />
-          <CustomizationWidget />
+          <AnalyzingWidget response={behaviour?.behaviour}  />
+          <AllocationWidget behaviour={behaviour} onAllocation={setAllocation} />
           <AssetRecommendationPage
             onStartOver={startOver}
             onInvest={investNow}
-            behaviour={behaviour}
+            allocation={allocation}
           />
         </Stepper>
       </div>

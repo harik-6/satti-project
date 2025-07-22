@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import SelectFundResponse, SelectFundRequest, TagResponse, BehaviourResponse
+from models import AllocationResponse, TagResponse, BehaviourResponse
 import services.funds_service as funds_service
 import services.tag_service as tag_service
 import services.behaviour_service as behaviour_service
@@ -35,7 +35,7 @@ async def upload_file(file: UploadFile = File(...)):
             print(f"File {file.filename} written to disk successfully")
 
         tagged =  await tag_service.categorize_tags(file_name)
-        return TagResponse(status="success", payload=tagged)
+        return TagResponse(status="success", transactions=tagged)
 
     except Exception as e:
         e.print_stack()
@@ -45,7 +45,7 @@ async def upload_file(file: UploadFile = File(...)):
 async def classify_behaviour(body: TagResponse):
     try:
         sum_by_category = {}
-        for transaction in body.payload:
+        for transaction in body.transactions:
             category = transaction.get("category", "untagged")
             credit = float(transaction.get("credit", "0.00"))
             debit = float(transaction.get("debit", "0.00"))
@@ -56,7 +56,6 @@ async def classify_behaviour(body: TagResponse):
                 else:
                     sum_by_category[category] = total_sum
 
-        print("Sum by category: ", sum_by_category)
 
         behaviour = await behaviour_service.classify_behaviour(sum_by_category)
         behaviour_short = await extractor_service.format_ai_text(behaviour, "Spender type Conservative, Moderate, Aggressive. Just give me one word response")
@@ -66,18 +65,29 @@ async def classify_behaviour(body: TagResponse):
         print("Error classifying behaviour: ", e)
         raise HTTPException(status_code=500, detail=f"Error classifying behaviour: {str(e)}")
 
-@app.post("/select/funds", response_model=SelectFundResponse)
-async def classify_fund(body: SelectFundRequest):
-    recommendation =  await funds_service.select_funds(body.behaviour)
-    return SelectFundResponse(status="success", payload=recommendation)
 
-@app.get("/portfolio")
-async def portfolio():
-    sample_text = "Low Risk Fund (Fixed Income): UTI Corporate Bond Fund from UTI Asset Management Co. Ltd. with a Beta of 0.8, indicating lower volatility. High Risk Fund (Equity): Tata Small Cap Fund from Tata Asset Management, with a high standard deviation of 13.94, suggesting higher risk and potential for higher returns. Low Risk Fund (Fixed Income): Tata Treasury Advantage Fund from Tata Asset Management, which is a low duration fund and has a standard deviation of only 0.25, indicating lower volatility and lower risk"
-    fund_names = await extractor_service.format_ai_text(sample_text, "List of funds. Just give me the list of mutual fund names without the fund house name in comma separated format and nothing else")
-    print("Fund names extracted: ", fund_names)
-    fund_list = []
-    for fund in fund_names.split(","):
-        fund_list.append(fund.strip())
-    portfolio_summary = await portfolio_service.generate_portfolio_summary(fund_list)
-    return {"status": "success", "payload": portfolio_summary}
+@app.post("/allocate")
+async def extract_funds(body: BehaviourResponse):
+    allocation_text = await funds_service.allocate_fund_by_percentage(body.behaviour_short)
+    gold_perc = await extractor_service.format_ai_text(allocation_text, "Percentage of gold. Just give me the percentage number without percentage sign and nothing else")
+    mf_fund_type = await extractor_service.format_ai_text(allocation_text, "Type of mutual fund equity or debt Just give me in one word like debt or equity and nothing else")
+    mf_perc = await extractor_service.format_ai_text(allocation_text, "Percentage of mutual fund. Just give me the percentage number without percentage sign and nothing else")
+    allocation_perc = {"gold": gold_perc, "mf_perc": mf_perc, "mf_type": mf_fund_type}
+    return AllocationResponse(status="success", allocation_text=allocation_text, allocation_perc=allocation_perc)
+
+
+@app.post("/recommend")
+async def classify_fund(body: AllocationResponse):
+    recommendation =  await funds_service.select_funds(body.allocation_text)
+    return ""
+#
+# @app.get("/portfolio")
+# async def portfolio():
+#     sample_text = "Low Risk Fund (Fixed Income): UTI Corporate Bond Fund from UTI Asset Management Co. Ltd. with a Beta of 0.8, indicating lower volatility. High Risk Fund (Equity): Tata Small Cap Fund from Tata Asset Management, with a high standard deviation of 13.94, suggesting higher risk and potential for higher returns. Low Risk Fund (Fixed Income): Tata Treasury Advantage Fund from Tata Asset Management, which is a low duration fund and has a standard deviation of only 0.25, indicating lower volatility and lower risk"
+#     fund_names = await extractor_service.format_ai_text(sample_text, "List of funds. Just give me the list of mutual fund names without the fund house name in comma separated format and nothing else")
+#     print("Fund names extracted: ", fund_names)
+#     fund_list = []
+#     for fund in fund_names.split(","):
+#         fund_list.append(fund.strip())
+#     portfolio_summary = await portfolio_service.generate_portfolio_summary(fund_list)
+#     return {"status": "success", "payload": portfolio_summary}

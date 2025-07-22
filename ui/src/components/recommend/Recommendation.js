@@ -10,49 +10,42 @@ import ThinkerLoader from "../thinkerloader/ThinkerLoader";
 const textSize = '1.1rem';
 const lineHeight = '1.5';
 
-export default function AssetRecommendationPage({ behaviour, onStartOver,  onInvest  }) {
+export default function AssetRecommendationPage({ allocation, onStartOver,  onInvest  }) {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [recommendation, setRecommendation] = useState(null);
   const [actionDiv, setActionDiv] = useState(false);
-  const [error, setError] = useState(null);
 
   function showActionDiv() {
     setActionDiv(true);
   }
 
-  async function getFundSuggestions(spendBehaviour) {
+  async function getFundSuggestions() {
     try {
       setLoading(true);
-      const response = await fetch("http://127.0.0.1:8000/select/funds", {
+      const response = await fetch("http://127.0.0.1:8000/recommend", {
         method: "POST",
-        body: JSON.stringify({
-          "behaviour": spendBehaviour,
-        }),
+        body: JSON.stringify(allocation),
         headers: {
           "Content-Type": "application/json",
         }
       });
       const result = await response.json();
-      setRecommendation(result.payload);
-      setError(null);
+      console.log(result);
+      // setRecommendation(result.payload);
       setLoading(false);
     } catch (error) {
-      setError(error);
+      console.error(`recommendation error: ${error.message}`);
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    if (behaviour === null) {
-      setError("Something went wrong. Please try again.");
-      setLoading(false);
-    } else {
-      getFundSuggestions(behaviour);
+    if(allocation != null) {
+      getFundSuggestions();
       setActionDiv(false);
     }
-
-  }, [behaviour]);
+  }, [allocation]);
 
   return (
     <div className="flex flex-col items-center min-h-screen pt-16">

@@ -1,18 +1,23 @@
 from pydantic import BaseModel
 
+class TagResponse(BaseModel):
+    status: str
+    transactions: list
+
 class BehaviourResponse(BaseModel):
     status: str
     behaviour: str
     behaviour_short: str
 
-# Select Fund Models
-class SelectFundRequest(BaseModel):
-    behaviour: str
-
-class SelectFundResponse(BaseModel):
+class AllocationResponse(BaseModel):
     status: str
-    payload: str
+    allocation_text: str
+    allocation_perc: dict
 
-class TagResponse(BaseModel):
-    status: str
-    payload: list
+# # Select Fund Models
+# class SelectFundRequest(BaseModel):
+#     behaviour: str
+#
+# class SelectFundResponse(BaseModel):
+#     status: str
+#     payload: str

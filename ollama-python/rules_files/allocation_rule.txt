@@ -1,0 +1,39 @@
+Investment Recommendation Strategy
+Aggressive Spender
+Objective: Build saving habits and promote financial discipline
+Investment Allocation:
+- Gold: 70%
+- Mutual Funds (Debt-oriented): 30%
+Reasoning:
+- Gold offers psychological and cultural comfort
+- Debt funds introduce market products with low risk
+App Features:
+- Gold SIP suggestions
+- Budgeting nudges
+- Overspending alerts
+
+Moderate Spender
+Objective: Steady wealth growth while maintaining lifestyle
+Investment Allocation:
+- Mutual Funds (Hybrid/Balanced): 60%
+- Gold: 40%
+Reasoning:
+- Hybrid funds balance growth and safety
+- Gold for diversification
+App Features:
+- Goal-based investment tools
+- Portfolio rebalancing
+- Medium-risk profiling
+
+Conservative Spender
+Objective: Capital preservation with safe growth
+Investment Allocation:
+- Mutual Funds (Debt/Conservative Hybrid): 70%
+- Gold: 30%
+Reasoning:
+- Leverage high savings rate for longer investments
+- Encourage gradual equity exposure via STP/SWP
+App Features:
+- Safe growth planning (education/retirement)
+- Convert gold returns into mutual funds
+- Detailed performance dashboards

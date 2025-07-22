@@ -1,6 +1,7 @@
 import ollama
 
-async def chat_with_llm(messages, model):
+async def chat_with_llm(model,messages ):
+    # print(f"Chatting with LLM with model {model}")
     try:
         result = ollama.chat(model=model, messages=messages)
         return result.message.content
