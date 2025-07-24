@@ -1,12 +1,12 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import AllocationResponse, TagResponse, BehaviourResponse
 import services.funds_service as funds_service
 import services.tag_service as tag_service
 import services.behaviour_service as behaviour_service
 import services.extractor_service as extractor_service
 import services.portfolio_service as portfolio_service
+from models.models import RecommendationResponse, AllocationResponse, TagResponse, BehaviourResponse
 
 app = FastAPI()
 
@@ -77,17 +77,19 @@ async def extract_funds(body: BehaviourResponse):
 
 
 @app.post("/recommend")
-async def classify_fund(body: AllocationResponse):
-    recommendation =  await funds_service.select_funds(body.allocation_text)
-    return ""
-#
-# @app.get("/portfolio")
-# async def portfolio():
-#     sample_text = "Low Risk Fund (Fixed Income): UTI Corporate Bond Fund from UTI Asset Management Co. Ltd. with a Beta of 0.8, indicating lower volatility. High Risk Fund (Equity): Tata Small Cap Fund from Tata Asset Management, with a high standard deviation of 13.94, suggesting higher risk and potential for higher returns. Low Risk Fund (Fixed Income): Tata Treasury Advantage Fund from Tata Asset Management, which is a low duration fund and has a standard deviation of only 0.25, indicating lower volatility and lower risk"
-#     fund_names = await extractor_service.format_ai_text(sample_text, "List of funds. Just give me the list of mutual fund names without the fund house name in comma separated format and nothing else")
-#     print("Fund names extracted: ", fund_names)
-#     fund_list = []
-#     for fund in fund_names.split(","):
-#         fund_list.append(fund.strip())
-#     portfolio_summary = await portfolio_service.generate_portfolio_summary(fund_list)
-#     return {"status": "success", "payload": portfolio_summary}
+async def recommend_funds(body: AllocationResponse):
+    recommendation =  await funds_service.get_recommended_funds(body.allocation_text)
+    return RecommendationResponse(status="success", recommendation=recommendation)
+
+@app.get("/portfolio")
+async def portfolio():
+    sample_text = ("Based on the recommended allocation strategy, I recommend the following funds:\n\n**Debt/Conservative Hybrid Mutual Funds (70%):**\n"
+                   "I suggest allocating to Axis Liquid Fund  Direct Plan (Growth) with a 1-year CAGR of 0.0126"
+                   "And also Invest in HDFC Nifty 50 Index Fund with a 3-year cagr of 0.0805 and also UTI Nifty Next 50 Index Fund with a 5-year cagr of 0.1025")
+    fund_names = await extractor_service.format_ai_text(sample_text, "From the text just give the names of mutual funds with comma seperated")
+    fund_list = []
+    for fund in fund_names.split(","):
+        fund_list.append(fund.strip())
+    print("Fund list : ", fund_list)
+    portfolio_summary = await portfolio_service.generate_portfolio_summary(fund_list)
+    return {"status": "success", "portfolio": portfolio_summary}

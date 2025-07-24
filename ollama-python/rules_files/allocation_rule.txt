@@ -7,10 +7,6 @@ Investment Allocation:
 Reasoning:
 - Gold offers psychological and cultural comfort
 - Debt funds introduce market products with low risk
-App Features:
-- Gold SIP suggestions
-- Budgeting nudges
-- Overspending alerts
 
 Moderate Spender
 Objective: Steady wealth growth while maintaining lifestyle
@@ -20,10 +16,6 @@ Investment Allocation:
 Reasoning:
 - Hybrid funds balance growth and safety
 - Gold for diversification
-App Features:
-- Goal-based investment tools
-- Portfolio rebalancing
-- Medium-risk profiling
 
 Conservative Spender
 Objective: Capital preservation with safe growth
@@ -33,7 +25,3 @@ Investment Allocation:
 Reasoning:
 - Leverage high savings rate for longer investments
 - Encourage gradual equity exposure via STP/SWP
-App Features:
-- Safe growth planning (education/retirement)
-- Convert gold returns into mutual funds
-- Detailed performance dashboards

@@ -1,8 +1,7 @@
 import services.llm_service as llm_service
 
-async def select_funds(allocation_text: str):
-    print("Request body allocation text: ", allocation_text)
-    with open("rules_files/mf_data_set1.json", 'r') as file:
+async def get_recommended_funds(allocation_text: str):
+    with open("mf_data_set1.json", 'r') as file:
         mf_data = file.read()
 
     system_prompt = f"""
@@ -12,10 +11,9 @@ async def select_funds(allocation_text: str):
 
     fund_selection_chat = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": allocation_text},
+        {"role": "user", "content": f"Based on this recomended allocation {allocation_text}, select one fund in Gold and one Fund in equity and give"
+                                    f"a 30 words reasoning for each selected based on the data provided."},
     ]
-
-    # fund_selection_chat[1]["content"] = user_input
 
     try:
         print("Fund selection started")
@@ -43,7 +41,7 @@ async def allocate_fund_by_percentage(behaviour: str):
     ]
 
     try:
-        print(f"Fund allocation percentage selection started {user_prompt}")
+        print(f"Fund allocation percentage selection started")
         response = await llm_service.chat_with_llm(model="llama3.2:latest", messages=fund_allocation_chat)
         print(f"Fund allocation percentage selection ended")
         return response

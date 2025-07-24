@@ -10,14 +10,9 @@ import {
   TableHead, 
   TableRow, 
   Paper,
-  Tabs,
-  Tab,
-  Box,
   IconButton,
-  Menu,
-  MenuItem
 } from "@mui/material";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 export default function PortfolioPage() {
   const [tab, setTab] = useState("mutual");
@@ -33,7 +28,7 @@ export default function PortfolioPage() {
     });
     const result = await response.json();
     console.log("portfolio", result);
-    setPortfolio(result.payload);
+    setPortfolio(result.portfolio);
   }
 
   useEffect(() => {
@@ -50,23 +45,13 @@ export default function PortfolioPage() {
 
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <Box sx={{ mb: 3 }}>
-        <Tabs value={tab} onChange={handleTabChange} aria-label="portfolio tabs">
-          <Tab label="Mutual Funds" value="mutual" />
-          <Tab label="Stock" value="stock" />
-        </Tabs>
-      </Box>
-      
-      {tab === "stock" ? (
-        <div className="text-gray-500 text-center py-20">Stock portfolio coming soon...</div>
-      ) : (
+    <div className="max-w-8xl mx-auto p-6 px-10">
         <TableContainer component={Paper} elevation={1}>
           <Table>
             <TableHead>
               <TableRow>
                   {
-                  ["Fund Name", "NAV"].map((header) => (
+                  ["Fund Name","Fund House", "NAV" , "Invested", "Current" , "P/L" ,""].map((header) => (
                     <TableCell key={header} sx={{ fontWeight: 'bold' }}>{header}</TableCell>
                   ))
                   }
@@ -75,15 +60,22 @@ export default function PortfolioPage() {
             <TableBody>
               {
                 portfolio.map((fund) => (
-                  <TableRow key={fund["nav"]}>
-                    <TableCell>{fund["scheme_name"]}</TableCell>
-                    <TableCell>{fund["nav"]}</TableCell>
+                  <TableRow key={fund["scheme_code"]}>
+                    <TableCell>
+                      <p className="font-semibold">{fund["scheme_name"]}</p>
+                      <p className="text-xs text-gray-500 py-1">{fund["scheme_category"]}</p>
+                    </TableCell>
+                    <TableCell>{fund["fund_house"]}</TableCell>
+                    <TableCell>{Number(fund["data"][0]["nav"]).toFixed(2)}</TableCell>
+                    <TableCell>{0}</TableCell>
+                    <TableCell>{0}</TableCell>
+                    <TableCell>{0}</TableCell>
                     <TableCell align="right">
                       <IconButton
                         onClick={() => openGraph(fund)}
                         size="small"
                       >
-                        <MoreVertIcon />
+                        <KeyboardArrowDownIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -92,7 +84,6 @@ export default function PortfolioPage() {
             </TableBody>
           </Table>
         </TableContainer>
-      )}
     </div>
   );
 } 

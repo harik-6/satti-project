@@ -6,7 +6,7 @@ def read_system_prompt():
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
         system_message = (f"You are a financial advisor in India and only based on the context provided:This is the context {content}."
-                          f"classify the spending behaviour of the user based in 50/30/20 rule.")
+                          f"classify the spending behaviour of the user based in 50/30/20 rule.Do not make up any data use whatever is provided.")
         return system_message
     except Exception as e:
         return e 

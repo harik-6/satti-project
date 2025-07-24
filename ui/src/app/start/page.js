@@ -27,7 +27,8 @@ function AnalyzingWidget({ response }) {
             maxHeight: '600px',
             overflowY: 'auto',
             maxWidth: '60%',
-            lineHeight: '1.5'
+            lineHeight: '1.5',
+            padding: '1.1rem'
           }}
             content={response}
           />

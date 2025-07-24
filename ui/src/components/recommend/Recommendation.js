@@ -15,12 +15,14 @@ export default function AssetRecommendationPage({ allocation, onStartOver,  onIn
   const [loading, setLoading] = useState(true);
   const [recommendation, setRecommendation] = useState(null);
   const [actionDiv, setActionDiv] = useState(false);
+  const [error, setError] = useState(false);
 
   function showActionDiv() {
     setActionDiv(true);
   }
 
   async function getFundSuggestions() {
+    console.log(allocation);
     try {
       setLoading(true);
       const response = await fetch("http://127.0.0.1:8000/recommend", {
@@ -31,11 +33,11 @@ export default function AssetRecommendationPage({ allocation, onStartOver,  onIn
         }
       });
       const result = await response.json();
-      console.log(result);
-      // setRecommendation(result.payload);
+      setRecommendation(result);
       setLoading(false);
     } catch (error) {
       console.error(`recommendation error: ${error.message}`);
+      setError(true);
       setLoading(false);
     }
   }
@@ -48,7 +50,7 @@ export default function AssetRecommendationPage({ allocation, onStartOver,  onIn
   }, [allocation]);
 
   return (
-    <div className="flex flex-col items-center min-h-screen pt-16">
+    <div className="flex flex-col items-center min-h-screen pt-16 overflow-y-auto">
       <div className="w-full max-w-2xl flex flex-col gap-4 items-end">
         <p style={{
           fontSize: textSize,
@@ -78,8 +80,9 @@ export default function AssetRecommendationPage({ allocation, onStartOver,  onIn
                 <Markup sx={{
                   overflowY: 'auto',
                   fontSize: textSize,
-                  lineHeight: lineHeight
-                }} content={recommendation} onComplete={() => showActionDiv()} />
+                  lineHeight: lineHeight,
+                  padding: '1.1rem'
+                }} content={recommendation?.recommendation} onComplete={() => showActionDiv()} />
               )
             )
           }

@@ -10,7 +10,7 @@ export default function AllocationWidget({ behaviour, onAllocation }) {
   const [allocation, setAllocation] = useState(null);
 
 
-  const fetchAllocation = async (bh) => {
+  const fetchAllocation = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/allocate", {
         method: "POST",

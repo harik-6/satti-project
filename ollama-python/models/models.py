@@ -14,10 +14,6 @@ class AllocationResponse(BaseModel):
     allocation_text: str
     allocation_perc: dict
 
-# # Select Fund Models
-# class SelectFundRequest(BaseModel):
-#     behaviour: str
-#
-# class SelectFundResponse(BaseModel):
-#     status: str
-#     payload: str
+class RecommendationResponse(BaseModel):
+    status: str
+    recommendation: str

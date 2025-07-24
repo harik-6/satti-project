@@ -36,8 +36,7 @@ export default function Tag({transactions = [], onUpdate}) {
     'rent', 'food', 'shopping', 'groceries', 'movies', 
     'entertainment', 'essential', 'health', 
     'transport', 'trips', 'bank',
-    'investment', 'insurance', 'education', 'stocks',
-    'utility','income',,'utility','untagged'
+    'investment', 'insurance', 'education', 'stocks','income','utility','untagged'
   ];
 
   const headers = ["Id","Date", "Narration","Amount", "Category"];

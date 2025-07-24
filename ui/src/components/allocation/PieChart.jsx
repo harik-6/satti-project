@@ -11,6 +11,10 @@ import { Pie } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 export default function PieChart({ gold_perc, equity_perc }) {
+
+  React.useEffect(() => {
+  }, [gold_perc, equity_perc]);
+
 	const data = {
 		labels: [ 'Gold','Equity'],
 		datasets: [
