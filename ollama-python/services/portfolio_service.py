@@ -3,8 +3,9 @@ import json
 from datetime import datetime, timedelta
 
 mf = Mftool()
-mf_code_file = "mf_codes.json"
-valid_fund_houses = ["Axis", "SBI", "Nippon", "HDFC", "ICICI", "UTI"]
+MF_CODES_FILE = "mf_codes.json"
+VALID_FUND_HOUSES = ["Axis", "SBI", "Nippon", "HDFC", "ICICI", "UTI"]
+PURCHASE_UNIT = 10
 
 async def download_data():
     fund_house_names = ["Axis", "SBI", "Nippon", "HDFC", "ICICI", "UTI"]
@@ -17,13 +18,13 @@ async def download_data():
                 "schemeName": value
             })
 
-    with open(mf_code_file, "w") as file:
+    with open(MF_CODES_FILE, "w") as file:
         json.dump(fund_details, file, indent=2)
     return ""
 
 def get_available_schemes(fund_name):
     filtered_list = []
-    with open(mf_code_file, "r") as file:
+    with open(MF_CODES_FILE, "r") as file:
         fund_details = json.load(file)
 
     for fund in fund_details:
@@ -84,12 +85,28 @@ def filter_last_3_years_data(scheme_data):
 
     return filtered_scheme_data
 
+def calculate_profile_and_lost(scheme_data):
+    if not scheme_data or 'data' not in scheme_data:
+        return scheme_data
+    last_3_year_nav = scheme_data['data']
+    total_invested_value = 0
+    total_purchased_units = 0
+    for data in last_3_year_nav[1:]:
+        total_invested_value += float(data['nav']) * PURCHASE_UNIT
+        total_purchased_units += PURCHASE_UNIT
+    total_current_value = float(last_3_year_nav[0]['nav']) * total_purchased_units
+    profit_loss_perc = ((total_current_value - total_invested_value) / total_invested_value) * 100
+    scheme_data['total_invested_value'] = total_invested_value
+    scheme_data['total_current_value'] = total_current_value
+    scheme_data['profit_loss_perc'] = profit_loss_perc
+    return scheme_data
+
 async def generate_portfolio_summary(fund_list):
     portfolio_summary = []
 
     filtered_fund_list = []
     for fund_name in fund_list:
-        for house in valid_fund_houses:
+        for house in VALID_FUND_HOUSES:
             if fund_name.strip().lower().startswith(house.lower()):
                 filtered_fund_list.append(fund_name)
                 break
@@ -108,7 +125,8 @@ async def generate_portfolio_summary(fund_list):
                     selected = key
                     scheme_data = mf.get_scheme_historical_nav(selected)
                     filtered_scheme_data = filter_last_3_years_data(scheme_data)
-                    portfolio_summary.append(filtered_scheme_data)
+                    data_with_pl = calculate_profile_and_lost(filtered_scheme_data)
+                    portfolio_summary.append(data_with_pl)
             if not found_direct_growth:
                 for obj in matching_schemes_list:
                     key = obj["schemeCode"]
@@ -118,5 +136,6 @@ async def generate_portfolio_summary(fund_list):
                         selected = key
                         scheme_data = mf.get_scheme_historical_nav(selected)
                         filtered_scheme_data = filter_last_3_years_data(scheme_data)
-                        portfolio_summary.append(filtered_scheme_data)
+                        data_with_pl = calculate_profile_and_lost(filtered_scheme_data)
+                        portfolio_summary.append(data_with_pl)
     return portfolio_summary
