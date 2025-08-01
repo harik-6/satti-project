@@ -1,19 +1,37 @@
 from pydantic import BaseModel
+from beanie import Document
+
+class UploadResponse(BaseModel):
+    flow_id: str
+    status: str
 
 class TagResponse(BaseModel):
+    flow_id: str
     status: str
     transactions: list
 
-class BehaviourResponse(BaseModel):
+class BehaviourResponse(Document):
+    flow_id: str
     status: str
     behaviour: str
     behaviour_short: str
 
-class AllocationResponse(BaseModel):
+    class Settings:
+        name = "behaviour_response"
+
+class AllocationResponse(Document):
+    flow_id: str
     status: str
     allocation_text: str
-    allocation_perc: dict
+    allocation_perc: str
 
-class RecommendationResponse(BaseModel):
+    class Settings:
+        name = "allocation_response"
+
+class RecommendationResponse(Document):
+    flow_id: str
     status: str
     recommendation: str
+
+    class Settings:
+        name = "recommendation_response"

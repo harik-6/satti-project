@@ -2,49 +2,26 @@
 import React, { useState } from "react";
 import Stepper from "../../components/stepper/Stepper";
 import UploadPage from "../../components/upload/Upload";
-import Markup from "../../components/markup/Markup";
 import AllocationWidget from "../../components/allocation/Allocation";
 import TagWidget from "../../components/tag/Tag";
-import PreLoader from "@/components/preloader/PreLoader";
+import BehaviourWidget from "../../components/behaviour/Behaviour";
 import AssetRecommendationPage from "../../components/recommend/Recommendation";
+import { useRouter } from "next/navigation";
 
 const labels = [
-  "Upload",
-  "Tag",
-  "Analyze",
+  "Upload Statement",
+  "Transaction Tagging",
+  "Behaviour Analysis",
   "Portfolio Allocation",
-  "Recommendation"
+  "Portfolio Recommendation"
 ];
 
 
-function AnalyzingWidget({ response }) {
-  return (
-    <div className="flex flex-col h-full items-center">
-      {
-        response ? (
-          <Markup sx={{
-            fontSize: '1.2rem',
-            maxHeight: '600px',
-            overflowY: 'auto',
-            maxWidth: '60%',
-            lineHeight: '1.5',
-            padding: '1.1rem'
-          }}
-            content={response}
-          />
-        ) : (
-          <PreLoader />
-        )
-      }
-    </div>
-  );
-}
 
 export default function StartPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [transactions, setTransactions] = useState([]);
-  const [behaviour, setBehaviour] = useState(null);
-  const [allocation, setAllocation] = useState(null);
+  const [flowId, setFlowId] = useState(null);
 
   const handleUpload = async (file) => {
     setCurrentStep(1);
@@ -56,52 +33,31 @@ export default function StartPage() {
         body: formData,
       });
       const result = await response.json();
-      console.log(result);
-      setTransactions(result.transactions);
+      setFlowId(result.flow_id);
     } catch (err) {
       console.log(`file upload error: ${err.message}`);
     }
   };
 
-  const classifyBehaviour = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/classify/behaviour", {
-        method: "POST",
-        body: JSON.stringify({
-          "status": "success",
-          "transactions": transactions,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const result = await response.json();
-      setBehaviour(result);
-    } catch (err) {
-      console.log(`classify behaviour error: ${err.message}`);
-    }
-  }
-
   const startOver = () => {
     setCurrentStep(0);
     setBehaviour(null);
+    setFlowId(null);
   }
 
   const investNow = () => {
-    router.replace(`/portfolio`);
+    router.replace(`/portfolio?flow_id=${flowId}`);
   }
 
   const handleNext = async (newStep) => {
-    if (newStep === 2) {
-      classifyBehaviour();
-      return;
-    }
+    setCurrentStep(newStep);
   };
 
   const handleBack = (newStep) => {
     if (newStep === 0) {
       startOver();
     }
+    setCurrentStep(newStep);
   };
 
   return (
@@ -116,15 +72,14 @@ export default function StartPage() {
         >
           <UploadPage onUpload={handleUpload} />
           <TagWidget
-            transactions={transactions}
-            onUpdate={setTransactions}
+            flowId={flowId} 
           />
-          <AnalyzingWidget response={behaviour?.behaviour}  />
-          <AllocationWidget behaviour={behaviour} onAllocation={setAllocation} />
+          <BehaviourWidget flowId={flowId}  />
+          <AllocationWidget flowId={flowId} />
           <AssetRecommendationPage
+            flowId={flowId}
             onStartOver={startOver}
             onInvest={investNow}
-            allocation={allocation}
           />
         </Stepper>
       </div>

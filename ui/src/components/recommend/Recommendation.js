@@ -9,8 +9,9 @@ import ThinkerLoader from "../thinkerloader/ThinkerLoader";
 
 const textSize = '1.1rem';
 const lineHeight = '1.5';
+let FLOW_ID = "";
 
-export default function AssetRecommendationPage({ allocation, onStartOver,  onInvest  }) {
+export default function AssetRecommendationPage({ flowId, onStartOver,  onInvest  }) {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [recommendation, setRecommendation] = useState(null);
@@ -22,12 +23,10 @@ export default function AssetRecommendationPage({ allocation, onStartOver,  onIn
   }
 
   async function getFundSuggestions() {
-    console.log(allocation);
     try {
       setLoading(true);
-      const response = await fetch("http://127.0.0.1:8000/recommend", {
+      const response = await fetch(`http://127.0.0.1:8000/recommend?flow_id=${flowId}`, {
         method: "POST",
-        body: JSON.stringify(allocation),
         headers: {
           "Content-Type": "application/json",
         }
@@ -43,11 +42,12 @@ export default function AssetRecommendationPage({ allocation, onStartOver,  onIn
   }
 
   useEffect(() => {
-    if(allocation != null) {
-      getFundSuggestions();
+    if (FLOW_ID != flowId) {
+      FLOW_ID = flowId;
       setActionDiv(false);
+      getFundSuggestions();
     }
-  }, [allocation]);
+  }, [flowId]);
 
   return (
     <div className="flex flex-col items-center min-h-screen pt-16 overflow-y-auto">

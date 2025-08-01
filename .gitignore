@@ -15,7 +15,7 @@ ollama-python/.DS_Store
 ollama-python/.idea/
 ollama-python/*/__pycache__/
 ollama-python/*/*/__pycache__/
-
+ollama-python/resources
 
 # Jupyter Notebook checkpoints
 ollama-python/.ipynb_checkpoints/

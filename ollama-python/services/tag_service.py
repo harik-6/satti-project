@@ -2,7 +2,7 @@ import services.llm_service as llm_service
 
 async def categorize_tags(file_name: str):
     try:
-        with open(f"uploaded_files/{file_name}", "r", encoding="utf-8") as file:
+        with open(f"resources/{file_name}", "r", encoding="utf-8") as file:
             content = file.readlines()
             transactions = []
             for line in content[1:]:

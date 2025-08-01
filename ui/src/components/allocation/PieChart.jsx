@@ -16,14 +16,14 @@ export default function PieChart({ gold_perc, equity_perc }) {
   }, [gold_perc, equity_perc]);
 
 	const data = {
-		labels: [ 'Gold','Equity'],
+		labels: ['Gold','Equity'],
 		datasets: [
 			{
 				label: 'Allocation %',
 				data: [gold_perc, equity_perc],
 				backgroundColor: [
-					'rgba(237, 237, 13, 0.8)',
-					'rgba(2, 108, 178, 0.8)',
+					'rgb(249, 203, 0)',
+					'rgba(1, 11, 102, 0.8)',
 				],
 			},
 		],

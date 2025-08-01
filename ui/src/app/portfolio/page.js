@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { 
   Button, 
@@ -11,12 +11,36 @@ import {
   TableRow, 
   Paper,
   IconButton,
+  Collapse,
 } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function PortfolioPage() {
   const [tab, setTab] = useState("mutual");
   const [portfolio, setPortfolio] = useState([]);
+  const [expandedFund, setExpandedFund] = useState(null);
   const searchParams = useSearchParams();
 
   async function getPortfolio() {
@@ -39,8 +63,56 @@ export default function PortfolioPage() {
     setTab(newValue);
   };
 
-  const openGraph = (fund) => {
-    setSelectedFund(fund);
+  const toggleGraph = (fundCode) => {
+    setExpandedFund(expandedFund === fundCode ? null : fundCode);
+  };
+
+  const createChartData = (fundData) => {
+    const sortedData = [...fundData].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    const labels = sortedData.map(item => item.date);
+    const navData = sortedData.map(item => parseFloat(item.nav));
+    
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: 'NAV',
+          data: navData,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          tension: 0.1,
+          pointRadius: 0, // Remove dots
+          pointHoverRadius: 0, // Remove dots on hover
+        },
+      ],
+    };
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false, // Hide legend
+      },
+      title: {
+        display: false, // Hide title
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false, // Remove vertical grid lines
+        },
+      },
+      y: {
+        beginAtZero: false,
+        grid: {
+          display: false, // Remove horizontal grid lines
+        },
+      },
+    },
   };
 
   // Function to format numbers to Indian rupee denomination
@@ -87,9 +159,9 @@ export default function PortfolioPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {
-                portfolio.map((fund) => (
-                  <TableRow key={fund["scheme_code"]}>
+              {portfolio.map((fund) => (
+                <React.Fragment key={fund["scheme_code"]}>
+                  <TableRow>
                     <TableCell>
                       <p className="font-semibold">{fund["scheme_name"]}</p>
                       <p className="text-xs text-gray-500 py-1">{fund["scheme_category"]}</p>
@@ -101,15 +173,26 @@ export default function PortfolioPage() {
                     <TableCell>{formatProfitLoss(fund["profit_loss_perc"])}</TableCell>
                     <TableCell align="right">
                       <IconButton
-                        onClick={() => openGraph(fund)}
+                        onClick={() => toggleGraph(fund["scheme_code"])}
                         size="small"
                       >
-                        <KeyboardArrowDownIcon />
+                        {expandedFund === fund["scheme_code"] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                       </IconButton>
                     </TableCell>
                   </TableRow>
-                ))  
-              }
+                  {expandedFund === fund["scheme_code"] && (
+                    <TableRow>
+                      <TableCell colSpan={7}>
+                        <Collapse in={expandedFund === fund["scheme_code"]} timeout="auto" unmountOnExit>
+                          <div style={{ padding: '20px', height: '400px' }}>
+                            <Line data={createChartData(fund["data"])} options={chartOptions} />
+                          </div>
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
