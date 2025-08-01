@@ -116,26 +116,32 @@ async def generate_portfolio_summary(fund_list):
         if len(fund_name) > 3:
             fund_name_short = " ".join(fund_name.split(" ")[0:3])
             matching_schemes_list = get_available_schemes(fund_name_short.strip())
+
+            # Search once for direct and growth
             for obj in matching_schemes_list:
                 key = obj["schemeCode"]
                 value = obj["schemeName"]
                 if "direct" in value.lower() and "growth" in value.lower():
-                    print(f"Direct and Growth fund we got: {value}")
                     found_direct_growth = True
                     selected = key
                     scheme_data = mf.get_scheme_historical_nav(selected)
                     filtered_scheme_data = filter_last_3_years_data(scheme_data)
                     data_with_pl = calculate_profile_and_lost(filtered_scheme_data)
                     portfolio_summary.append(data_with_pl)
-            if not found_direct_growth:
-                for obj in matching_schemes_list:
+                    break
+
+
+            # If not found search once for only direct
+            for obj in matching_schemes_list:
+                if not found_direct_growth:
                     key = obj["schemeCode"]
                     value = obj["schemeName"]
                     if "direct" in value.lower():
-                        print(f"Direct and Growth not fund, but direct we got: {value}")
                         selected = key
                         scheme_data = mf.get_scheme_historical_nav(selected)
                         filtered_scheme_data = filter_last_3_years_data(scheme_data)
                         data_with_pl = calculate_profile_and_lost(filtered_scheme_data)
                         portfolio_summary.append(data_with_pl)
+                        break
+
     return portfolio_summary

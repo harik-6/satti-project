@@ -133,7 +133,6 @@ async def portfolio(flow_id: str):
     body = await RecommendationResponse.find_one({"flow_id": flow_id})
     if not body:
         raise HTTPException(status_code=400, detail="No recommendation found for the flow id")
-    print(body.recommendation)
     fund_names = await extractor_service.format_ai_text(body.recommendation, "From the text just give the names of mutual funds with comma seperated")
     fund_list = []
     for fund in fund_names.split(","):
