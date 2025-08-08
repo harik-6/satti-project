@@ -3,54 +3,101 @@ import React, { useEffect, useState } from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import Typography from '@mui/material/Typography';
 import CardMedia from '@mui/material/CardMedia';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import StreamingMarkup from "@/components/markup/Markup";
 
 export default function Rules() {
-
+  const [open, setOpen] = useState(false);
+  const [selectedRule, setSelectedRule] = useState(null);
+  const [rules, setRules] = useState([]);
 
   useEffect(() => {
+    const fetchRules = async () => {
+      const response = await fetch(`http://127.0.0.1:8000/rules`);
+      const result = await response.json();
+      setRules(result.rules);
+    }
+    fetchRules();
   }, []);
 
- 
+  const handleOpen = (rule) => {
+    setSelectedRule(rule);
+    setOpen(true);
+  };
 
-  const cards = [
-    {
-      title: "Rule 1",
-      image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-      description: "This is a sample rule card. You can describe a rule here."
-    },
-    {
-      title: "Rule 2",
-      image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
-      description: "Another example rule. Add your own content as needed."
-    },
-    {
-      title: "Rule 3",
-      image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-      description: "Third rule card for demonstration. Customize as you wish."
-    }
-  ];
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <div className="flex justify-center items-start pt-4">
-      <div className="flex flex-row gap-6">
-        {cards.map((card, idx) => (
-          <Card key={idx}>
+    <div className="flex items-start p-8">
+      <div className="flex flex-row gap-8">
+        {rules.map((rule, idx) => (
+          <Card
+            key={idx}
+            sx={{ width: 300 }}
+          >
             <CardMedia
               component="img"
-              image={card.image}
-              alt={card.title}
+              image={rule["bg_image_url"]}
+              alt={rule.name}
+              height="200"
             />
-            <CardHeader title={card.title} />
+            <CardHeader title={rule.name} />
             <CardContent>
-              <Typography variant="body2" color="text.secondary">
-                {card.description}
-              </Typography>
+              <Button
+                disableElevation
+                variant="contained"
+                color="primary"
+                onClick={() => handleOpen(rule)}
+                size="small"
+
+              >
+                View
+              </Button>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '12px',
+            maxHeight: '90vh'
+          }
+        }}
+      >
+        <DialogTitle sx={{ bgcolor: 'primary.main', color: 'white' }}>
+          {selectedRule?.name}
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <StreamingMarkup content={selectedRule?.content} speed={0} />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            color="primary"
+            disableElevation
+            size="small"
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 } 

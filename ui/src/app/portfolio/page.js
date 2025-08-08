@@ -42,10 +42,11 @@ export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState([]);
   const [expandedFund, setExpandedFund] = useState(null);
   const searchParams = useSearchParams();
+  const flowId = searchParams.get("flow_id");
 
   async function getPortfolio() {
-    const response = await fetch("http://127.0.0.1:8000/portfolio", {
-      method: "GET",
+    const response = await fetch(`http://127.0.0.1:8000/portfolio?flow_id=${flowId}`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       }

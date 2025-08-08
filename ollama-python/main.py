@@ -9,6 +9,7 @@ import services.tag_service as tag_service
 import services.behaviour_service as behaviour_service
 import services.extractor_service as extractor_service
 import services.portfolio_service as portfolio_service
+import services.rule_service as rule_service
 from models.models import UploadResponse, TagResponse, BehaviourResponse, AllocationResponse, RecommendationResponse
 
 from beanie import init_beanie
@@ -33,7 +34,7 @@ async def init_db():
     except Exception as e:
         print("Error connecting to DB: ", e)
 
-@app.on_event("startup")
+# @app.on_event("startup")
 async def start_db():
     await init_db()
 
@@ -140,3 +141,23 @@ async def portfolio(flow_id: str):
     portfolio_summary = await portfolio_service.generate_portfolio_summary(fund_list)
     return {"status": "success", "portfolio": portfolio_summary}
 
+@app.get("/rules")
+async def get_rules():
+    tagging_rules = rule_service.get_rule_file("tagging_rule.txt")
+    behaviour_rules = rule_service.get_rule_file("behaviour_rules.txt")
+    allocation_rules = rule_service.get_rule_file("allocation_rule.txt")
+    rules = [
+        {
+            "name": "Tagging Rules",
+            "content": tagging_rules,
+            "bg_image_url" : "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
+        },
+        {"name": "Behaviour Rules", "content": behaviour_rules, "bg_image_url" : "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" },
+        {"name": "Allocation Rules", "content": allocation_rules , "bg_image_url" : "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"}
+    ]
+    return { "status": "success" , "rules": rules }
+
+# @app.post("/rules")
+# async def update_rules(body: dict):
+#     rule_service.update_rule_file(body["file_name"], body["content"])
+#     return { "status": "success" }

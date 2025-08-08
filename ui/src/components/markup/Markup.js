@@ -8,6 +8,13 @@ export default function StreamingMarkup({ content, speed = 15, onComplete, sx })
   useEffect(() => {
     setDisplayed("");
     if (!content) return;
+    
+    if (speed === 0) {
+      setDisplayed(content);
+      onComplete?.();
+      return;
+    }
+    
     let i = 0;
     const interval = setInterval(() => {
       setDisplayed(content.slice(0, i + 1));
@@ -18,7 +25,7 @@ export default function StreamingMarkup({ content, speed = 15, onComplete, sx })
       }
     }, speed);
     return () => clearInterval(interval);
-  }, [content, speed]);
+  }, [content, speed, onComplete]);
 
   return (
     <div style={sx} className="prose">
